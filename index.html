@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Netflix Content Intelligence</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#0b0b0d;color:#f5f5f7}
+header{padding:26px 6%;background:linear-gradient(120deg,#111,#241015);border-bottom:1px solid #2d2d31}
+h1{margin:0;font-size:30px;color:#e50914}.sub{color:#aaa;margin-top:7px}
+.wrap{max-width:1400px;margin:auto;padding:24px}
+.filters{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px}.filters select{background:#18181b;color:white;border:1px solid #444;border-radius:8px;padding:11px 14px}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:15px}.card,.panel{background:#151518;border:1px solid #29292d;border-radius:14px;padding:20px}.num{font-size:30px;font-weight:700;color:#fff}.label{color:#aaa;margin-top:6px}
+.charts{display:grid;grid-template-columns:1.2fr 1fr;gap:18px;margin-top:18px}.panel h2{font-size:17px;margin-top:0}.full{grid-column:1/-1}
+.barrow{display:grid;grid-template-columns:150px 1fr 45px;gap:8px;align-items:center;margin:10px 0;font-size:13px}.barbg{height:22px;background:#242428;border-radius:5px;overflow:hidden}.bar{height:100%;background:linear-gradient(90deg,#e50914,#ff5b61)}
+.line{height:230px;display:flex;align-items:end;gap:6px;padding-top:15px;border-bottom:1px solid #444}.linebar{flex:1;background:#e50914;border-radius:4px 4px 0 0;min-width:9px;position:relative}.linebar:hover{background:#ff5b61}.linebar span{position:absolute;bottom:-22px;font-size:10px;color:#aaa;transform:rotate(-35deg)}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{text-align:left;padding:11px;border-bottom:1px solid #2a2a2d}th{color:#e50914}footer{text-align:center;color:#777;padding:25px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}.charts{grid-template-columns:1fr}}@media(max-width:500px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header><h1>NETFLIX CONTENT INTELLIGENCE</h1><div class="sub">Interactive Data Analytics Dashboard • 150 Demo Titles • 100+ People</div></header>
+<div class="wrap">
+<div class="filters"><select id="type"><option value="">All Content Types</option></select><select id="country"><option value="">All Countries</option></select><select id="rating"><option value="">All Ratings</option></select><select id="year"><option value="">All Release Years</option></select></div>
+<div class="grid">
+<div class="card"><div class="num" id="total">-</div><div class="label">Total Content</div></div>
+<div class="card"><div class="num" id="movies">-</div><div class="label">Movies</div></div>
+<div class="card"><div class="num" id="shows">-</div><div class="label">TV Shows</div></div>
+<div class="card"><div class="num" id="countries">-</div><div class="label">Countries</div></div>
+<div class="card"><div class="num" id="duration">-</div><div class="label">Avg Movie Duration</div></div>
+</div>
+<div class="charts">
+<div class="panel"><h2>📈 Content Added Over Time</h2><div class="line" id="growth"></div></div>
+<div class="panel"><h2>🎬 Movies vs TV Shows</h2><div id="types"></div></div>
+<div class="panel"><h2>🌍 Top Countries</h2><div id="topCountries"></div></div>
+<div class="panel"><h2>🎭 Top Genres</h2><div id="genres"></div></div>
+<div class="panel full"><h2>📋 Dataset Explorer</h2><div style="overflow:auto"><table><thead><tr><th>Title</th><th>Type</th><th>Country</th><th>Year</th><th>Rating</th><th>Genre</th></tr></thead><tbody id="table"></tbody></table></div></div>
+</div></div>
+<footer>Netflix Content Intelligence • Data Analytics Project By Aditya Raj</footer>
+<script>
+let raw=[];
+function parseCSV(t){let lines=t.trim().split(/\r?\n/), h=lines.shift().match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g).map(x=>x.replace(/^"|"$/g,'').trim());return lines.map(l=>{let a=[],q=false,c='';for(let i=0;i<l.length;i++){if(l[i]=='"')q=!q;else if(l[i]==','&&!q){a.push(c);c=''}else c+=l[i]}a.push(c);let o={};h.forEach((x,i)=>o[x]=(a[i]||'').replace(/^"|"$/g,''));return o})}
+fetch('data/netflix_titles.csv').then(r=>r.text()).then(t=>{raw=parseCSV(t);setup();render()}).catch(()=>document.body.innerHTML='<h2 style="padding:30px">Please run with a local server or deploy to GitHub Pages.</h2>');
+function setup(){[['type','type'],['rating','rating'],['year','release_year']].forEach(([id,key])=>fill(id,[...new Set(raw.map(x=>x[key]))].sort()));fill('country',[...new Set(raw.flatMap(x=>x.country.split(',').map(y=>y.trim())))].sort());document.querySelectorAll('select').forEach(x=>x.onchange=render)}
+function fill(id,a){let s=document.getElementById(id);a.forEach(x=>s.innerHTML+=`<option>${x}</option>`)}
+function count(a){return a.reduce((o,x)=>(o[x]=(o[x]||0)+1,o),{})}
+function bars(id,obj,n=10){let a=Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n),m=a[0]?.[1]||1;document.getElementById(id).innerHTML=a.map(([k,v])=>`<div class="barrow"><span>${k}</span><div class="barbg"><div class="bar" style="width:${v/m*100}%"></div></div><b>${v}</b></div>`).join('')}
+function render(){let type=document.getElementById('type').value,country=document.getElementById('country').value,rating=document.getElementById('rating').value,year=document.getElementById('year').value;
+let d=raw.filter(x=>(!type||x.type==type)&&(!country||x.country.includes(country))&&(!rating||x.rating==rating)&&(!year||x.release_year==year));
+document.getElementById('total').textContent=d.length;document.getElementById('movies').textContent=d.filter(x=>x.type=='Movie').length;document.getElementById('shows').textContent=d.filter(x=>x.type=='TV Show').length;
+let cs=[...new Set(d.flatMap(x=>x.country.split(',').map(y=>y.trim())))];document.getElementById('countries').textContent=cs.length;
+let mins=d.filter(x=>x.type=='Movie').map(x=>+x.duration.split(' ')[0]);document.getElementById('duration').textContent=mins.length?Math.round(mins.reduce((a,b)=>a+b,0)/mins.length)+' min':'-';
+bars('types',count(d.map(x=>x.type)),5);bars('topCountries',count(d.flatMap(x=>x.country.split(',').map(y=>y.trim()))));bars('genres',count(d.flatMap(x=>x.listed_in.split(',').map(y=>y.trim()))));
+let g=count(d.map(x=>x.date_added.slice(0,4))),a=Object.entries(g).sort(),m=Math.max(...a.map(x=>x[1]),1);document.getElementById('growth').innerHTML=a.map(([k,v])=>`<div class="linebar" title="${k}: ${v}" style="height:${v/m*190}px"><span>${k}</span></div>`).join('');
+document.getElementById('table').innerHTML=d.slice(0,30).map(x=>`<tr><td>${x.title}</td><td>${x.type}</td><td>${x.country}</td><td>${x.release_year}</td><td>${x.rating}</td><td>${x.listed_in}</td></tr>`).join('')}
+</script></body></html>
