@@ -1,37 +1,88 @@
-# Netflix Content Intelligence Dashboard
+# Netflix Content Intelligence - End-to-End Data Analytics Project
 
-## Run locally
-### Easiest option
-Double-click `RUN_PROJECT.bat`.
+## Live Dashboard
+Deploy `index.html` and project files to Netlify for a live interactive dashboard.
 
-Your dashboard opens at:
-http://localhost:8000
+## Project Overview
+This is a complete Data Analytics portfolio project demonstrating the full analytics lifecycle:
 
-No Python packages or database installation are required.
-You only need Python installed (standard Python installation).
-
-### Alternative
-Open a terminal in this folder and run:
-python -m http.server 8000
-
-Then open http://localhost:8000
-
-## Deploy for a live link
-This project is a static website and can be deployed free on GitHub Pages, Netlify, or Vercel.
-
-### GitHub Pages
-1. Create a GitHub repository.
-2. Upload all files from this project.
-3. Go to Settings → Pages.
-4. Choose Deploy from branch → main → /root.
-5. Your live URL will be generated.
+**Raw Data → Data Cleaning → Feature Engineering → EDA → SQL Analysis → Interactive Dashboard**
 
 ## Dataset
-- 150 demo content records
-- 150+ unique people generated across directors and cast
-- 10 countries
+Included demo dataset:
+- 240 original content records
+- 1 intentional duplicate for duplicate-removal testing
+- 220 unique people available across cast/director generation
+- 12 countries
+- Multiple genres and ratings
 - Movies and TV Shows
-- Multiple genres, ratings, years and durations
+- Missing values for real cleaning demonstrations
 
-## Project Skills
-HTML, CSS, JavaScript, Data Analysis, Filtering, KPI Analysis, Data Visualization, Interactive Dashboard
+## Run Everything Locally
+
+### Option 1: Run analytics pipeline
+Double-click:
+`RUN_ANALYTICS_PIPELINE.bat`
+
+This runs:
+1. `01_data_cleaning.py`
+2. `02_feature_engineering.py`
+3. `03_eda.py`
+
+Generated files:
+- `data/processed/netflix_cleaned.csv`
+- `data/processed/netflix_analytics.csv`
+- `reports/data_quality_report.json`
+- Charts inside `reports/figures/`
+
+### Option 2: Run dashboard
+Double-click:
+`RUN_DASHBOARD.bat`
+
+Open:
+`http://localhost:8000`
+
+## Python Analytics
+
+### Data Cleaning
+- Duplicate removal
+- Missing value analysis
+- String standardization
+- Date conversion
+- Data quality reporting
+
+### Feature Engineering
+- Year added
+- Month added
+- Duration value and unit
+- Maturity category
+- Content age
+- Movie/TV flags
+
+### Exploratory Data Analysis
+- Content growth
+- Top genres
+- Top countries
+- Rating distribution
+
+## SQL
+`sql/schema.sql` contains a normalized analytics schema.
+
+`sql/analysis_queries.sql` contains 15 professional analytical SQL queries.
+
+## Dashboard
+Features:
+- Interactive filters
+- KPI cards
+- Content growth
+- Country analysis
+- Genre analysis
+- Content type analysis
+- Dynamic business insights
+- Dataset explorer
+
+## Skills Demonstrated
+Python • Pandas • Data Cleaning • Feature Engineering • EDA • SQL • Data Modeling • Data Visualization • HTML • CSS • JavaScript • Netlify Deployment
+
+## Resume Description
+Built an end-to-end Netflix Content Intelligence analytics platform using Python, Pandas, SQL and an interactive web dashboard. Performed data cleaning, duplicate detection, missing value analysis, feature engineering and exploratory data analysis; designed a normalized SQL schema with 15 analytical queries and deployed an interactive dashboard for real-time filtering and KPI analysis.
