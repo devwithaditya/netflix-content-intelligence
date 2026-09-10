@@ -1,4 +1,4 @@
-# Netflix Content Intelligence - End-to-End Data Analytics Project
+# Netflix Content Intelligence
 
 ## Live Dashboard
 Deploy `index.html` and project files to Netlify for a live interactive dashboard.
